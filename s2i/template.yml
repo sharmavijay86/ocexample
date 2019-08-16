@@ -1,0 +1,59 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: custom-build
+objects:
+  - kind: BuildConfig
+    apiVersion: v1
+    metadata:
+      name: "${APPLICATION_NAME}"
+      annotations:
+        description: Defines how to build the application
+    spec:
+      output:
+        to:
+          kind: ImageStreamTag
+          name: "${APPLICATION_NAME}:latest"
+      source:
+        type: Source
+        git:
+          uri: "${SOURCE_REPOSITORY_URL}" 
+          ref: "master"
+        contextDir: "/"
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
+            kind: "ImageStreamTag"
+            namespace: "ci"
+            name: 'tomcat-base1:latest'
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: "${APPLICATION_NAME}" 
+    spec:
+      replicas: 1
+      selector:
+        name: "${APPLICATION_NAME}" 
+      template:
+        metadata:
+          labels:
+            name: "${APPLICATION_NAME}"
+        spec:
+          containers:
+          - image: "${APPLICATION_NAME}"
+            name: "${APPLICATION_NAME}"
+            ports:
+            - containerPort: 8080
+              protocol: TCP
+parameters:
+  - name: NEXUS_URL 
+    displayName: NEXUS url
+    description: The URL of the repository with your war
+    value: nexus_url 
+    required: true
+  - name: APPLICATION_NAME 
+    displayName: Application Name 
+    description: Application Name 
+    value: appname 
+    required: true

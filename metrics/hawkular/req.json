@@ -1,0 +1,23 @@
+{
+  "tags": "descriptor_name:network/tx_rate|network/rx_rate|memory/usage|cpu/usage_rate,type:pod,pod_id:19019669-6709-11e8-b30f-0007cb0b3bc7",
+  "bucketDuration": "1mn",
+  "start": "-1mn"
+}
+
+//https://hawkular-metrics.apps.run9.io/hawkular/metrics/m/stats/query
+// POST
+
+
+POST /hawkular/metrics/m/stats/query HTTP/1.1
+Host: hawkular-metrics.apps.run9.io
+Connection: keep-alive
+Content-Length: 177
+Hawkular-Tenant: lab
+Origin: https://run9.io
+Authorization: Bearer dRzEsMO2DUMMYDUMMYDUMMYvG0j_-VpC8SbmXUpez5s
+Content-Type: application/json
+Accept: application/json
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Mobile Safari/537.36
+Referer: https://run9.io/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9,es;q=0.8,is;q=0.7,pt;q=0.6
