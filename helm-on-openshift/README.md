@@ -1,16 +1,3 @@
-### Verify right openshift version
-```
-sh-3.2$ oc version
-oc v3.7.0-alpha.1+fdbd3dc
-kubernetes v1.7.0+695f48a16f
-features: Basic-Auth
-```
-
-### Bring up cluster 
-```
-oc cluster up
-oc project myproject
-```
 
 ### Install helm cli from 
 ```
@@ -19,16 +6,23 @@ https://github.com/kubernetes/helm/releases
 
 ### Install helm tiller
 ```
-helm init 
-oc get pods -n kube-system
-oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:kube-system:default
+wget https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz
+tar xvf helm-v2.14.3-linux-amd64.tar.gz 
+cd linux-amd64/
+cp helm /usr/local/bin/
+cp tiller /usr/local/bin/
+chmod +x /usr/local/bin/*
+oc project kube-system
+helm init --wait
+oc -n kube-system get deployments
+oc create serviceaccount --namespace kube-system tiller
+oc create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+oc patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+helm install stable/heapster
+oc get pods
 ```
 
-### Deploy Redis
+### Deploy Redis example
 ```
 helm install stable/redis
 ```
-
-
-
-
