@@ -17,7 +17,7 @@ spec:
         operator: Exists
       containers:
       - name: counter
-        image: "kahootali/counter:1.0"
+        image: "sharmavijay86/counter:latest"
         volumeMounts:
         - name: counter
           mountPath: /app/
