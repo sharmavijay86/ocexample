@@ -6,8 +6,8 @@ Setup haproxy ingress controller
 
 If wish to change controller image version etc follow bellow else optional
 
-```$ kubectl -n ingress-controller edit configmap haproxy-ingress
-$ kubectl -n ingress-controller edit daemonset haproxy-ingress```
+```$ kubectl -n ingress-controller edit configmap haproxy-ingress```
+```$ kubectl -n ingress-controller edit daemonset haproxy-ingress```
 
 now label master node or worker node - ( note the node ip will be haproxy route frontend ip )
 
@@ -19,8 +19,8 @@ And Done!!
 
 deploy and expose nginx to test 
 
-```$ kubectl create deployment nginx --image nginx:alpine
-$ kubectl expose deployment nginx --port=80```
+```$ kubectl create deployment nginx --image nginx:alpine```
+```$ kubectl expose deployment nginx --port=80```
 
 Now create ingress.yaml
 
@@ -36,7 +36,8 @@ spec:
       - backend:
           serviceName: nginx
           servicePort: 80
-        path: /```
+        path: /
+```        
         
 Apply ingress now
 
