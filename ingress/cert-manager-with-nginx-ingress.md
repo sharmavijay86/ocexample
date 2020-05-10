@@ -23,7 +23,7 @@ cert-manager-cainjector-577f6d9fd7-tr77l   1/1     Running   0          2m
 cert-manager-webhook-787858fcdb-nlzsq      1/1     Running   0          2m
 ```
 
-Create a Certificate issuer 
+5) Create a Certificate issuer 
 ```
 vim issuer.yaml
 
@@ -49,18 +49,18 @@ Change EMAIL-ADDRESS with your email id
 
 save and exit 
 
-now apply this to kubernetes
+6) now apply this to kubernetes
 ```
 kubectl apply -f issuer.yaml
 ```
 
-in order to test add bitnami helm repo 
+7) in order to test add bitnami helm repo 
 
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 ```
 
-run a joomla deploymnet 
+8) run a joomla deploymnet 
 ```
 helm upgrade joomla bitnami/joomla \
   --set joomlaPassword=secretpassword \
@@ -77,7 +77,7 @@ helm upgrade joomla bitnami/joomla \
   
   replace DOMAIN with your domain name
   
-  Now acme pod along with joomla pods will be apear and once certificate issued it will terminate. you can see certificate issued using bellow
+ 9) Now acme pod along with joomla pods will be apear and once certificate issued it will terminate. you can see certificate issued using bellow
   ```
   $ kubectl get certificate
 NAME               READY   SECRET             AGE
