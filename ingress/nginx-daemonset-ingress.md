@@ -15,26 +15,17 @@ In order to setup nginx as ingress controller daemonset use bellow -
 ```helm repo add stable https://kubernetes-charts.storage.googleapis.com```
 
 4) install nginx ingress controller
-
-```helm install nginx stable/nginx-ingress --namespace=ingress \
+```
+helm install nginx stable/nginx-ingress --namespace=ingress \
 --set controller.kind=DaemonSet \
 --set controller.hostNetwork=true \
 --set-string  controller.nodeSelector.master=true \
 --set controller.daemonset.useHostPort=true  \
 --set controller.daemonset.hostPorts.https=443 \
---set controller.service.type=""```
-
+--set controller.service.type=""
+```
 5) make enable master to run daemonset 
 
 ```kubectl taint nodes kmaster.mevijay.com node-role.kubernetes.io/master:NoSchedule\```
 
 Done!
--
-
-
-
-\
-\\
-
-\
-\
