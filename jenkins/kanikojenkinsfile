@@ -1,0 +1,51 @@
+pipeline {
+  agent {
+    kubernetes {
+      label 'example-kaniko-volumes'
+      yaml """
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  containers:
+  - name: jnlp
+    workingDir: /home/jenkins
+  - name: kaniko
+    workingDir: /home/jenkins
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+      - name: docker-config
+        mountPath: /kaniko/.docker
+  volumes:
+    - name: docker-config
+      configMap:
+        name: docker-config
+"""
+    }
+  }
+  stages {
+    stage('Build with Kaniko') {
+      environment {
+        PATH = "/busybox:/kaniko:$PATH"
+      }
+      steps {
+        container(name: 'kaniko', shell: '/busybox/sh') {
+
+          writeFile file: "Dockerfile", text: """
+            FROM jenkins/slave:3.29-2
+            MAINTAINER CloudBees Support Team <dse-team@cloudbees.com>
+            RUN mkdir /home/jenkins/.m2
+          """
+            
+          sh '''#!/busybox/sh
+            /kaniko/executor --context `pwd` --verbosity debug --destination sharmavijay86/jnlp-from-kaniko:latest
+          '''
+        }
+      }
+    }
+  }
+}
