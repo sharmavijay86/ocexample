@@ -1,7 +1,38 @@
 pipeline {
-  agent {
-    kubernetes {
-      label 'example-kaniko-volumes'
+  agent any
+   stages {
+     stage('Notification and SCM') {
+       parallel {
+     stage("notification slak send") {
+       steps {
+         script {
+           echo "Slack"
+         }
+       }
+     }
+   stage("Code Checkout") {
+            steps {
+                git credentialsId: 'gitlogin',
+                url: 'https://github.com/sharmavijay86/test.git'
+                  }
+              }
+     }
+     }
+    stage('Code Quality') {
+            steps {
+              script {
+                def scannerHome = tool 'sonarqube';
+                  withSonarQubeEnv("sonarqube") {
+                  sh "${scannerHome}/bin/sonar-scanner"
+                        }
+                       }
+                      }
+                }
+    stage('Build with Kaniko') {
+
+   agent {
+     kubernetes {
+      label 'kaniko-builder'
       yaml """
 kind: Pod
 metadata:
@@ -26,26 +57,23 @@ spec:
         name: docker-config
 """
     }
-  }
-  stages {
-    stage('Build with Kaniko') {
+   }
       environment {
         PATH = "/busybox:/kaniko:$PATH"
       }
       steps {
         container(name: 'kaniko', shell: '/busybox/sh') {
-
-          writeFile file: "Dockerfile", text: """
-            FROM jenkins/slave:3.29-2
-            MAINTAINER CloudBees Support Team <dse-team@cloudbees.com>
-            RUN mkdir /home/jenkins/.m2
-          """
             
-          sh '''#!/busybox/sh
-            /kaniko/executor --context `pwd` --verbosity debug --destination sharmavijay86/jnlp-from-kaniko:latest
-          '''
+          sh "/kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` --verbosity debug --destination sharmavijay86/jnlp-from-kaniko:${env.BUILD_ID}"
+          
         }
       }
     }
-  }
-}
+   stage("send result mail"){
+     steps{
+       echo "result send to mail server"
+     }
+   }
+  } //stages
+
+} //pipeline
