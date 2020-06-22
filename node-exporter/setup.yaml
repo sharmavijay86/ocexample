@@ -1,0 +1,39 @@
+- hosts: ocplocal
+  tasks:
+    - name: download and untar node_exporter tarball
+      unarchive:
+        src: https://github.com/prometheus/node_exporter/releases/download/v0.18.1/node_exporter-0.18.1.linux-amd64.tar.gz
+        dest: /opt/
+        copy: no
+    - name: create service user
+      user:
+        name: nodeusr
+        create_home: no
+        state: present
+        shell: /usr/bin/false
+    - name: copy binary to /usr/local/bin
+      copy:
+        src: /opt/node_exporter-0.18.1.linux-amd64/node_exporter
+        dest: /usr/local/bin/node_exporter
+        mode: 0755
+        remote_src: yes
+    - name: copy systemd file
+      copy:
+        src: node_exporter.service
+        dest: /etc/systemd/system/node_exporter.service
+    - name: reload systemd
+      systemd:
+        name: node_exporter.service
+        daemon_reload: yes
+    - name: enable and start service
+      systemd:
+        name: node_exporter.service
+        enabled: yes
+        state: restarted
+    - name: insert iptable rule
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 9100
+        jump: ACCEPT
+        action: insert

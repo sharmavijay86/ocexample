@@ -1,0 +1,79 @@
+pipeline {
+  agent any
+   stages {
+     stage('Notification and SCM') {
+       parallel {
+     stage("notification slak send") {
+       steps {
+         script {
+           echo "Slack"
+         }
+       }
+     }
+   stage("Code Checkout") {
+            steps {
+                git credentialsId: 'gitlogin',
+                url: 'https://github.com/sharmavijay86/test.git'
+                  }
+              }
+     }
+     }
+    stage('Code Quality') {
+            steps {
+              script {
+                def scannerHome = tool 'sonarqube';
+                  withSonarQubeEnv("sonarqube") {
+                  sh "${scannerHome}/bin/sonar-scanner"
+                        }
+                       }
+                      }
+                }
+    stage('Build with Kaniko') {
+
+   agent {
+     kubernetes {
+      label 'kaniko-builder'
+      yaml """
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  containers:
+  - name: jnlp
+    workingDir: /home/jenkins
+  - name: kaniko
+    workingDir: /home/jenkins
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+      - name: docker-config
+        mountPath: /kaniko/.docker
+  volumes:
+    - name: docker-config
+      configMap:
+        name: docker-config
+"""
+    }
+   }
+      environment {
+        PATH = "/busybox:/kaniko:$PATH"
+      }
+      steps {
+        container(name: 'kaniko', shell: '/busybox/sh') {
+            
+          sh "/kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` --verbosity debug --destination sharmavijay86/jnlp-from-kaniko:${env.BUILD_ID}"
+          
+        }
+      }
+    }
+   stage("send result mail"){
+     steps{
+       echo "result send to mail server"
+     }
+   }
+  } //stages
+
+} //pipeline
