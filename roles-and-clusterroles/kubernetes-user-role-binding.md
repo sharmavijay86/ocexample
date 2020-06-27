@@ -5,16 +5,27 @@ User: developer
 Project: project
 
 Create a project for user developer
+
 ```# kubectl create ns project```
+
 create a directory for user certificates
+
 ```# mkdir developer && cd developer```
+
 generate a user key 
+
 ```# openssl genrsa -out developer.key 2048```
+
 generate certificate signing request. Considering username as developer. You can use own username in CN section.
+
 ```# openssl req -new -key developer.key -out developer.csr -subj "/CN=developer/O=mevijay"```
+
 Now signe the CSR using kubernetes cluster CA certificate and key. You can copy these certificate and key from kubernetes server to local jump server etc if you wish or generate user certificate in directly kubernetes master node.
+
 ```# openssl x509 -req -in developer.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out developer.crt -days 500```
+
 create a role file yaml
+
 ```# vim developerrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -26,10 +37,12 @@ rules:
   resources: ["pods", "deployments", "replicasets"]
   verbs: ["get", "watch", "list", "create", "update", "patch", "delete"]
   create role```
-  ```
+ 
 # kubectl create -f developerrole.yaml
   ```
-  Now create a rolebinding file for user and role
+ 
+ Now create a rolebinding file for user and role
+
 ``` # vim developerrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -50,8 +63,11 @@ roleRef:
 # kubectl create -f developerrolebinding.yaml
   ```
   now create user developer crdedentials using certificate
+
 ```# kubectl config set-credentials developer --client-certificate=/root/developer.crt --client-key=/root/developer.key```
+
 and set the context for namespace and cluster 
+
 ```# kubectl config set-context developer-context --cluster=kubernetes --namespace=project --user=developer```
 
 Now you can generate a separate config for user by copying .kube/config file to otherplace and delete cluster roles of admin
@@ -81,7 +97,3 @@ users:
     client-key: /root/developer.key
 
 ```
-
-
-
-
