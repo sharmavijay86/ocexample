@@ -1,0 +1,21 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry.cloud.vssi.com"]
+    endpoint = ["https://registry.cloud.vssi.com"]
+  [plugins."io.containerd.grpc.v1.cri".registry.configs."registry.cloud.vssi.com".tls]
+    insecure_skip_verify = true
+kubeadmConfigPatches:
+- |
+  apiVersion: kubeadm.k8s.io/v1beta2
+  kind: ClusterConfiguration
+  imageRepository: registry.cloud.vssi.com/library
+  etcd:
+    local:
+      imageRepository: registry.cloud.vssi.com/library
+      imageTag: v3.4.3_vmware.5
+  dns:
+    type: CoreDNS
+    imageRepository: registry.cloud.vssi.com/library
+    imageTag: v1.6.7_vmware.1
