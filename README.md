@@ -1,9 +1,5 @@
-my repo
+## Notepad
 
-https://blog.kubernauts.io/backup-and-restore-pvcs-using-velero-with-restic-and-openebs-from-baremetal-cluster-to-aws-d3ac54386109
-
-https://blog.openshift.com/backup-openshift-resources-the-native-way/
-
-https://forum.restic.net/t/running-restic-with-velero-inside-openshift-okd/1868
-
-https://www.systutorials.com/docs/linux/man/8-heketi-cli/
+take note of multi workspace patch chectl:
+'''kubectl patch checluster/eclipse-che --patch "{\"spec\":{\"server\":{\"customCheProperties\": {\"CHE_LIMITS_USER_WORKSPACES_RUN_COUNT\": \"-1\"}}}}" --type=merge -n che
+'''
