@@ -69,4 +69,4 @@ receivers:
   webhook_configs:
     - send_resolved: true
       url: 'http://localhost:2000/low_priority_channel' # request handler 2
-      ```
+```
