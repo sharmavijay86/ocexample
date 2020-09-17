@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pdns
+  name: pdns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pdns
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pdns
+    spec:
+      containers:
+      - image: ngoduykhanh/powerdns-admin:latest
+        name: powerdns-admin
+        volumeMounts:
+          - name: pdnsdata
+            mountPath: /data
+      volumes:
+       - name: pdnsdata
+         persistentVolumeClaim:
+           claimName: pdnsvol

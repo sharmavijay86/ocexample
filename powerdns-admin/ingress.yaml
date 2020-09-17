@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+spec:
+  rules:
+  - host: pdns.mylab.local
+    http:
+      paths:
+        - backend:
+            serviceName: pdns
+            servicePort: 8080
