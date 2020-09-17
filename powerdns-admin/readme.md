@@ -4,4 +4,4 @@ This powerdns admin ui is a ui , we can manage powerdns dns zones and records fr
 
 This deployment can run on kubernetes and can connect to any powerdns using api interface. How to setup powerdns server is already explained here.   
 
-[https://mevijay.com/blog/powerdns.html](https://mevijay.com/blog/powerdns.htm)
+[https://mevijay.com/blog/powerdns.html](https://mevijay.com/blog/powerdns.html)
