@@ -60,3 +60,13 @@ If TLS is enabled for the Ingress, a Secret containing the certificate and key m
   type: kubernetes.io/tls
 
 ```
+Creating a tls secret you can generate csr and key pair first using bellow command. Send this to your CA get a certificate signed and post that using key and cert, create  a new secret to be used in above ingress example.
+
+to generate the csr.   
+```
+openssl req -new -newkey rsa:2048 -nodes -keyout server.key -out server.csr
+```   
+to create secret   
+```
+kubectl create secret tls ${CERT_NAME} --key ${KEY_FILE} --cert ${CERT_FILE}
+```
