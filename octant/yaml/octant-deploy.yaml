@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: octant
+  name: octant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: octant
+  template:
+    metadata:
+      labels:
+        app: octant
+    spec:
+      containers:
+      - image: sharmavijay86/octant:v2
+        name: octant
+        volumeMounts:
+        - name: kube-config
+          mountPath: /kube
+      volumes:
+        - name: kube-config
+          configMap:
+            name: octant-ctx
