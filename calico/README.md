@@ -57,9 +57,7 @@ kind: Installation
 metadata:
   name: default
 spec:
-  # Configures Calico networking.
   calicoNetwork:
-    # Note: The ipPools section cannot be modified post-install.
     ipPools:
     - blockSize: 26
       cidr: 192.168.0.0/16
