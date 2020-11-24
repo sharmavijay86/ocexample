@@ -42,3 +42,31 @@ ansible all -a "DATASTORE_TYPE=kubernetes KUBECONFIG=/tmp/.kubeconfig calicoctl 
 ```sh
 oc delete po -l k8s-app=calico-node
 ```
+### While Calico setup has been done in a k8s cluster having two interface (  nic )   
+There are chances in your prod environment that you get two nic interface , problem begins from here because vxlan encapsulation defult setting may misbehave with your connectivity ( internal within k8s)   
+fix is to use bellow   
+``
+DATASTORE_TYPE=kubernetes KUBECONFIG=~/.kube/config calicoctl patch ippool default-ipv4-ippool -p '{"spec": {"vxlanMode": "Always"}}'
+``   
+
+One more thing is if you wish to direct calico to use which particuler interface . do this.   
+
+``
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  # Configures Calico networking.
+  calicoNetwork:
+    # Note: The ipPools section cannot be modified post-install.
+    ipPools:
+    - blockSize: 26
+      cidr: 192.168.0.0/16
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+    nodeAddressAutodetectionV4
+	  firstFound: false
+	  interface: eth1
+ ``
