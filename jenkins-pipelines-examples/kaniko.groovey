@@ -1,0 +1,24 @@
+pipeline {
+    agent { label 'kaniko'}
+
+    stages {
+        stage("checking code") {
+            steps {
+                echo "Hello Step 1"
+            }
+        }
+         stage("Code Checkout") {
+            steps {
+                git credentialsId: 'gitcred',
+                url: 'https://github.com/sharmavijay86/test.git'
+                  }
+              }
+        stage('Image Build and push') {
+            steps {
+                container('kaniko') {
+                    sh "executor --insecure --dockerfile `pwd`/Dockerfile --skip-tls-verify --cache=true  --context `pwd` --destination=sharmavijay86/test1:v${env.BUILD_ID}"
+                }
+            }
+        }
+    }
+}
