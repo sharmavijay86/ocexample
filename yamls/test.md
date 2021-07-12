@@ -1,3 +1,3 @@
-/var/www/html
-/srv/httpd
-/test/new/dir
+/var/www/html   
+/srv/httpd   
+/test/new/dir   
