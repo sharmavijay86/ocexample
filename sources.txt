@@ -1,0 +1,3 @@
+/opt/dir1
+/opt/dir2
+/opt/dir3
