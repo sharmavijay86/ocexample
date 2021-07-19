@@ -20,7 +20,7 @@ pipeline {
         }
         stage('push') {
             steps {
- withCredentials([usernamePassword(credentialsId: git, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+ withCredentials([usernamePassword(credentialsId: 'git', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     sh """
                     git config --global user.name "sharmavijay86"
                     git config --global user.email "sharmavijay86@gmail.com"
