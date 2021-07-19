@@ -20,14 +20,13 @@ pipeline {
         }
         stage('push') {
             steps {
- withCredentials([usernamePassword(credentialsId: 'git', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                         script {
-                        env.encodedPass=URLEncoder.encode(PASS, "UTF-8")
-                    }
+ withCredentials([usernamePassword(credentialsId: git, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     sh """
+                    git config --global user.name "sharmavijay86"
+                    git config --global user.email "sharmavijay86@gmail.com"
                     git add --all
                     git commit -m "foobar" 
-                    git push https://${USER}:${encodedPass}@github.com/sharmavijay86/cicdtest.git 
+                    git push https://${USER}:${PASS}@github.com/sharmavijay86/cicdtest.git 
                     """
                     }
                 echo "stage push"
