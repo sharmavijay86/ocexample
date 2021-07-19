@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('checkout') {
+            steps {
+              git branch: 'main', credentialsId: 'git', url: 'https://github.com/sharmavijay86/cicdtest'
+            }
+        }
+        stage('add file') {
+            steps {
+                sh 'echo "Hello this is my ${BUILD_NUMBER} " > hello.txt'
+               sh 'ls && cat hello.txt'
+            }
+        }
+        stage('push') {
+            steps {
+ withCredentials([usernamePassword(credentialsId: 'git', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                         script {
+                        env.encodedPass=URLEncoder.encode(PASS, "UTF-8")
+                    }
+                    sh """
+                    git add --all
+                    git commit -m "foobar" 
+                    git push https://${USER}:${encodedPass}@github.com/sharmavijay86/cicdtest.git 
+                    """
+                    }
+                echo "stage push"
+                } 
+        } 
+                       
+    }
+      post {
+        always {
+            cleanWs()
+        }
+      }
+}
