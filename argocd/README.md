@@ -24,6 +24,9 @@ spec:
 ```
 ## argocd working cli 
 ```
+curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+chmod +x /usr/local/bin/argocd
+
 argocd login  --server https://argocd.k8s.myk8s.com --username admin --password myhardpass --grpc-web argocd.k8s.myk8s.com
 argocd cluster add arn:aws:eks:us-east-2:333333333:cluster/eks-demo --name aws-eksdemo
 ```
