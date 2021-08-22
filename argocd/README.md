@@ -22,3 +22,8 @@ spec:
     - name: argocd-server
       port: 443
 ```
+## argocd working cli 
+```
+argocd login  --server https://argocd.k8s.myk8s.com --username admin --password myhardpass --grpc-web argocd.k8s.myk8s.com
+argocd cluster add arn:aws:eks:us-east-2:333333333:cluster/eks-demo --name aws-eksdemo
+```
