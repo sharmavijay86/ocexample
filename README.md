@@ -17,3 +17,4 @@ ocbuild from binary
 --> Success
 
 ```
+https://secrethub.io/docs/guides/aws-eks/
