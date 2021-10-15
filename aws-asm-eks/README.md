@@ -1,34 +1,19 @@
 # AWS EKS & Secrets Manager (File & Env | Kubernetes | Secrets Store CSI Driver | K8s)
 
-[YouTube Tutorial](https://youtu.be/Rmgo6vCytsg)
-
-## 1. Create IAM User with Full Access
-- Create `admin` user and place it in `Admin` IAM group
-- Configure aws cli `aws configure`
-
-## 2. Create Secret in AWS Secrets Manager
+## 1. Create Secret in AWS Secrets Manager
 - Select `Other type of secrets`
 - Create key: `MY_API_TOKEN` and random value: `7623fd72g3d`
 - Give it a name `prod/service/token`
 - Open created secret to check ARN
 
-## 3. Create EKS Cluster Using eksctl
-- Create `eks.yaml` config file
-- Create EKS cluster
-```bash
-eksctl create cluster -f eks.yaml
-```
-- Check connection to EKS cluster
-```bash
-kubectl get svc
-```
+Get the cluster oidc ready..
 
-## 4. Create IAM OIDC Provider for EKS
+## 2. Create IAM OIDC Provider for EKS
 - Copy `OpenID Connect provider URL`
 - Create Identety Provider - select `OpenID Connect`
 - Enter `sts.amazonaws.com` for Audience
 
-## 5. Create IAM Policy to Read Secrets
+## 3. Create IAM Policy to Read Secrets
 - Create `APITokenReadAccess` IAM policy
 ```json
 {
@@ -42,7 +27,7 @@ kubectl get svc
     ]
 }
 ```
-## 6. Create IAM Role for a Kubernetes Service Account
+## 4. Create IAM Role for a Kubernetes Service Account
 - Click `Web identity` and select Identity provider that we created
 - Select `APITokenReadAccess` IAM Policy
 - Give it a name `api-token-access`
@@ -50,13 +35,13 @@ kubectl get svc
 - Update `aud` -> `sub`
 - Update `sts.amazonaws.com` -> `system:serviceaccount:production:nginx`
 
-## 7. Associate an IAM Role with Kubernetes Service Account
+## 5. Associate an IAM Role with Kubernetes Service Account
 - Create `nginx/namespace.yaml`
 - Create `nginx/service-account.yaml`
-- Apply kubernetes objects
-```bash
-kubectl apply -f nginx
-```
+
+**Note: Before Applying service account please edit the correct role ARN in annotation of service account. i.e. same ARN from above stpe 4. Same would be applicable for more namespaces service accounts.**   
+
+Validate the NS and SA
 - Get Kubernetes namespaces
 ```bash
 kubectl get ns
@@ -65,8 +50,8 @@ kubectl get ns
 ```bash
 kubectl get sa -n production
 ```
-
-## 8. Install the Kubernetes Secrets Store CSI Driver
+***Bellow two steps needs to perform once.***
+## 6. Install the Kubernetes Secrets Store CSI Driver
 - Create `secrets-store-csi-driver/0-secretproviderclasses-crd.yaml`
 - Create `secrets-store-csi-driver/1-secretproviderclasspodstatuses-crd.yaml`
 - Apply CRDs
@@ -96,7 +81,7 @@ helm repo add secrets-store-csi-driver https://raw.githubusercontent.com/kuberne
 helm -n kube-system install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver
 ```
 
-## 9. Install AWS Secrets & Configuration Provider (ASCP)
+## 7. Install AWS Secrets & Configuration Provider (ASCP)
 - Create `aws-provider-installer/0-service-account.yaml`
 - Create `aws-provider-installer/1-cluster-role.yaml`
 - Create `aws-provider-installer/2-cluster-role-binding.yaml`
@@ -110,18 +95,19 @@ kubectl apply -f aws-provider-installer
 kubectl logs -n kube-system -f -l app=csi-secrets-store-provider-aws
 ```
 
-## 10. Create Secret Provider Class
+## 8. Create Secret Provider Class
 - Create `nginx/2-secret-provider-class.yaml`
 ```bash
 kubectl apply -f nginx
 ```
 
-## 11. Demo
+## 9. Demo
 - Create nginx `3-deployment.yaml`
 - Open 2 tabs
 ```bash
 kubectl logs -n kube-system -f -l app=secrets-store-csi-driver
 ```
+Above logs can be checked for any troubleshootings
 ```bash
 kubectl apply -f nginx
 ```
@@ -136,23 +122,3 @@ cat /mnt/api-token/secret-token
 ```bash
 echo $API_TOKEN
 ```
-
-## Bonus
-[kubectx](https://github.com/ahmetb/kubectx)
-
-## Clean Up
-- Delete EKS Cluster
-```bash
-eksctl delete cluster -f eks.yaml
-```
-- Delete IAM Policy `APITokenReadAccess`
-- Delete IAM Role `api-token-access`
-- Delete IAM User `admin`
-
-## Links
-- [secrets-store-csi-driver](https://github.com/kubernetes-sigs/secrets-store-csi-driver)
-- [AWS Secrets & Configuration Provider (ASCP)](https://github.com/aws/secrets-store-csi-driver-provider-aws)
-- [Using Secrets Manager secrets in Amazon Elastic Kubernetes Service](https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html)
-- [How to use AWS Secrets & Configuration Provider with your Kubernetes Secrets Store CSI driver](https://aws.amazon.com/blogs/security/how-to-use-aws-secrets-configuration-provider-with-kubernetes-secrets-store-csi-driver/)
-- [IAM role configuration](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html)
-- [kubectx](https://github.com/ahmetb/kubectx)
