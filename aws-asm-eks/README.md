@@ -52,43 +52,19 @@ kubectl get sa -n production
 ```
 ***Bellow two steps needs to perform once.***
 ## 6. Install the Kubernetes Secrets Store CSI Driver
-- Create `secrets-store-csi-driver/0-secretproviderclasses-crd.yaml`
-- Create `secrets-store-csi-driver/1-secretproviderclasspodstatuses-crd.yaml`
-- Apply CRDs
-```bash
-kubectl apply -f secrets-store-csi-driver
-```
-- Create `secrets-store-csi-driver/2-service-account.yaml`
-- Create `secrets-store-csi-driver/3-cluster-role.yaml`
-- Create `secrets-store-csi-driver/4-cluster-role-binding.yaml`
-- Create `secrets-store-csi-driver/5-daemonset.yaml`
-- Create `secrets-store-csi-driver/6-csi-driver.yaml`
-- Apply Kubernetes objects
-```bash
-kubectl apply -f secrets-store-csi-driver
-```
-- Check the logs
-```bash
-kubectl logs -n kube-system -f -l app=secrets-store-csi-driver
-```
 
-- (Optionally) use helm chart
 ```bash
 helm repo add secrets-store-csi-driver https://raw.githubusercontent.com/kubernetes-sigs/secrets-store-csi-driver/master/charts
 ```
-- (Optionally) install helm chart
+-  install helm chart
 ```bash
-helm -n kube-system install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver
+helm -n kube-system install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --set syncSecret.enabled=true
 ```
 
 ## 7. Install AWS Secrets & Configuration Provider (ASCP)
-- Create `aws-provider-installer/0-service-account.yaml`
-- Create `aws-provider-installer/1-cluster-role.yaml`
-- Create `aws-provider-installer/2-cluster-role-binding.yaml`
-- Create `aws-provider-installer/3-daemonset.yaml`
-- Apply aws-provider-installer
+
 ```bash
-kubectl apply -f aws-provider-installer
+kubectl apply -f https://raw.githubusercontent.com/aws/secrets-store-csi-driver-provider-aws/main/deployment/aws-provider-installer.yaml
 ```
 - Check logs
 ```bash
