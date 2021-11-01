@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
-  namespace: production
 spec:
   replicas: 1
   selector:
@@ -25,15 +24,20 @@ spec:
           mountPath: /mnt/api-token
           readOnly: true
         env:
-        - name: API_TOKEN
+        - name: USERNAME
           valueFrom:
             secretKeyRef:
-              name: api-token
-              key: SECRET_TOKEN
+              name: secrets-manager-json
+              key: username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secrets-manager-json
+              key: password
       volumes:
       - name: my-api-token
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: aws-secrets
+            secretProviderClass: "basic-test-mount-spc"
