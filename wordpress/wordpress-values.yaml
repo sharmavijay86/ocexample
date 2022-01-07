@@ -1,0 +1,25 @@
+wordpressUsername: wpuser
+wordpressPassword: pass
+wordpressEmail: contact@example.com
+wordpressFirstName: wordpress
+wordpressLastName: User
+wordpressBlogName: example.com
+service: 
+  type: ClusterIP
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  tls: true
+  # you can use the bellow annotations for cert-manager letsencrypt issuer or other . And also setup your ingressclass.
+  annotations: 
+    cert-manager.io/cluster-issuer: le-issuer
+    kubernetes.io/ingress.class: nginx
+  hostname: mysite.example.com
+mariadb:
+  enabled: true
+  architecture: standalone
+  auth:
+    rootPassword: ""
+    database: bitnami_wordpress
+    username: bn_wordpress
+    password: ""
