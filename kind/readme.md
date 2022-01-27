@@ -10,9 +10,9 @@
  ### **Docker Installation**
 Docker setup steps based on your linux flavor can be find in here. 
 
-1. Steps for Ubuntu [Click here](https://docs.docker.com/engine/install/ubuntu/)
-1. Steps for Fedora [Click here](https://docs.docker.com/engine/install/fedora/)
-1. Steps for RHEL/CentOS [Click here](https://docs.docker.com/engine/install/rhel/)
+1. Steps for Ubuntu [Click here](https://docs.docker.com/engine/install/ubuntu/){:target="_blank"}
+1. Steps for Fedora [Click here](https://docs.docker.com/engine/install/fedora/){:target="_blank"}
+1. Steps for RHEL/CentOS [Click here](https://docs.docker.com/engine/install/rhel/){:target="_blank"}
 
 ### **Kind Setup**
 
