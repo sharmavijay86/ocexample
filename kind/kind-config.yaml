@@ -17,5 +17,9 @@ nodes:
       nodeRegistration:
         kubeletExtraArgs:
           node-labels: "ingress-ready=true"
+# if need to setup more worker node, uncomment bellow lines
+# - role: worker
+# - role: worker
+# - role: worker
 networking:
   kubeProxyMode: "ipvs"
