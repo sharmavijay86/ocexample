@@ -15,7 +15,45 @@ openssl req -new -key CA-key.pem -x509 -days 1000 -out CA-cert.pem
 ```
 openssl req -new -newkey rsa:2048 -nodes -keyout your_domain.key -out your_domain.csr
 ```
+## To generate the SAN CSR.
+To generate the SAN csr we need to create a request file and then to mention alternate domain names there and get it signed. bellow is template.
 
+### **Template req.conf** file -
+```
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+C = %country%
+ST = %state%
+L = %city%
+O = %company name%
+OU = %department%
+CN = example.com
+[v3_req]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = www.example.com
+DNS.2 = example.com
+DNS.3 = www.example1.com
+DNS.4 = example1.com
+```
+
+### Generate CSR
+```
+openssl req -new -out company_san.csr -newkey rsa:2048 -nodes -sha256 -keyout company_san.key.temp -config req.conf
+```
+Run the following command to verify the Certificate Signing Request:
+ ```
+openssl req -text -noout -verify -in company_san.csr
+```
+Run the following command to move the Key file into the correct format for use on NetScaler:
+ ```
+openssl rsa -in company_san.key.temp -out company_san.key
+```
 ## get the csr signed by your generate CA in step 2
 ```
 openssl x509 -req -days 365 -in your_domain.csr  -CA CA-cert.pem -CAkey CA-key.pem -CAcreateserial -out server-cer.pem
