@@ -54,6 +54,12 @@ Run the following command to move the Key file into the correct format for use o
  ```
 openssl rsa -in company_san.key.temp -out company_san.key
 ```
+
+openssl to check the certificate content and CN name.
+
+```
+openssl x509 -in server-cer.pem -text -noout
+```
 ## get the csr signed by your generate CA in step 2
 ```
 openssl x509 -req -days 365 -in your_domain.csr  -CA CA-cert.pem -CAkey CA-key.pem -CAcreateserial -out server-cer.pem
