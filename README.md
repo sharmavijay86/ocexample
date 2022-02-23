@@ -18,3 +18,17 @@ ocbuild from binary
 
 ```
 https://secrethub.io/docs/guides/aws-eks/
+
+
+## problem if mysql bin logs are getting generated and making your disk full.
+
+there is one go query to purge them all .
+```SQL
+reset master;
+
+reset slave;
+```
+
+you can stop it with option to set in mys.cnf file under mysql .
+
+skip-log-bin
