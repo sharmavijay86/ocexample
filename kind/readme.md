@@ -98,3 +98,36 @@ curl localhost/foo
 curl localhost/bar
 ```
 Above is working means we have setup corectly our kind cluster along with nginx ingress controller.
+
+## how to expose API for remote access
+You see we have exposed nodeport to host machine NIC interface, that is why you can access ingresson kind host ip address. If you wish to access this k8s server from remote machine, then you need api server also to expose on hostport. 
+
+This just need a configuration line to put in networking section.
+
+```
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    extraPortMappings:
+    - containerPort: 80
+      hostPort: 80
+      listenAddress: "127.0.0.1"
+      protocol: TCP
+    - containerPort: 443
+      hostPort: 443
+      listenAddress: "127.0.0.1"
+      protocol: TCP
+    kubeadmConfigPatches:
+    - |
+      kind: InitConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          node-labels: "ingress-ready=true"
+networking:
+  kubeProxyMode: "ipvs"
+  apiServerAddress: "0.0.0.0"
+  apiServerPort: 6443
+
+```
+
