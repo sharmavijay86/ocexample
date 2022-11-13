@@ -22,19 +22,19 @@ helm search repo wordpress --versions
 ```BASH
 kubectl create namespace nswordpress
 
-helm install wordpress wordpress --values=wordpress-values.yaml --namespace nswordpress --version 10.0.3 --repo=https://charts.bitnami.com/bitnami
+helm install wordpress wordpress --values=wordpress-values.yaml --namespace nswordpress --version 15.2.14 --repo=https://charts.bitnami.com/bitnami
 ```
 
 ### If you wish to see the readme of any particuler version do this
 
 ```BASH
-helm show readme bitnami/wordpress --version 10.0.3
+helm show readme bitnami/wordpress --version 15.2.14
 ```
 
 ### If you wish to see the values.yaml of any particuler version do this
 
 ```BASH
-helm show values bitnami/wordpress --version 10.0.3
+helm show values bitnami/wordpress --version 15.2.14
 ```
 
 ### required sql query
