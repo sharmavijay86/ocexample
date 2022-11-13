@@ -22,7 +22,7 @@ helm search repo wordpress --versions
 ```BASH
 kubectl create namespace nswordpress
 
-helm install wordpress bitnami/wordpress --values=wordpress-values.yaml --namespace nswordpress --version 10.0.3
+helm install wordpress wordpress --values=wordpress-values.yaml --namespace nswordpress --version 10.0.3 --repo=https://charts.bitnami.com/bitnami
 ```
 
 ### If you wish to see the readme of any particuler version do this
