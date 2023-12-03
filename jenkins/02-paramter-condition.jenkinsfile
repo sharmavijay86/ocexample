@@ -1,0 +1,11 @@
+//job creation should have check mark as "this build is parameterized " and then define the parameter e.g. here is jdkVersion
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            when {
+                expression { params.jdkVersion == "14" }
+            }
+        }
+    }
+}
